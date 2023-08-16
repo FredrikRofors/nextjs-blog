@@ -1,9 +1,21 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import styles from '../styles/Home.module.css';
+import utilStyles from '../styles/utils.module.css';
 import Layout, {siteTitle} from '../components/layout';
+import {getSortedPostsData} from '../lib/posts';
 
-export default function Home() {
+// Runs ONE time during build
+export async function getStaticProps() {
+    console.log('getStaticProps executed!');
+
+    const allPostsData = getSortedPostsData();
+    return {props: {
+            allPostsData
+        }};
+}
+
+export default function Home({allPostsData}) {
     return (
         <Layout home>
             <div className={
@@ -22,15 +34,31 @@ export default function Home() {
                         <a href="https://nextjs.org">Next.js stranger! :)</a>
                     </h1>
 
-                    <p className={
-                        styles.description
+                    <section className={
+                        `${
+                            utilStyles.headingMd
+                        } ${
+                            utilStyles.padding1px
+                        }`
                     }>
-                        Get started by editing
-                        <code>pages/index.js</code>
-                    </p>
-                    <p>
-                        <Link href="/posts/first-post">First post page</Link>
-                    </p>
+                        <h2 className={
+                            utilStyles.headingLg
+                        }>Blog</h2>
+                        <ul className={
+                            utilStyles.list
+                        }>
+                            {
+                            allPostsData.map(({id, date, title}) => (
+                                <li className={
+                                        utilStyles.listItem
+                                    }
+                                    key={id}>
+                                    {title}
+                                    <br/> {id}
+                                    <br/> {date} </li>
+                            ))
+                        } </ul>
+                    </section>
 
                     <div className={
                         styles.grid
